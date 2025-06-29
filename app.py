@@ -28,7 +28,7 @@ def create_user():
         return jsonify({"error": "User already exists"}), 409
 
     users[user_id] = {"id": user_id, "name": name}
-    return jsonify({"message": "User created successfully"}), 201  # ← fixed line
+    return jsonify({"message": "User created successfully"}), 201  
 
 @app.route('/users/<user_id>', methods=['PUT'])
 def update_user(user_id):
