@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 
-app= Flask(__name__)
+app = Flask(__name__)
 
 users = {}
 
@@ -17,10 +17,10 @@ def get_user(user_id):
 
 @app.route('/users', methods=['POST'])
 def create_user():
-    data= request.get_json()
+    data = request.get_json()
     user_id = data.get('id')
-    name= data.get('name')
-    
+    name = data.get('name')
+
     if not user_id or not name:
         return jsonify({"error": "ID and name are required"}), 400
 
@@ -28,7 +28,7 @@ def create_user():
         return jsonify({"error": "User already exists"}), 409
 
     users[user_id] = {"id": user_id, "name": name}
-    return jsonify(users[user_id]), 201
+    return jsonify({"message": "User created successfully"}), 201  # ← fixed line
 
 @app.route('/users/<user_id>', methods=['PUT'])
 def update_user(user_id):
@@ -38,7 +38,16 @@ def update_user(user_id):
     if user_id not in users:
         return jsonify({"error": "User not found"}), 404
 
-    
-    users[user_id]['name']= name
+    users[user_id]['name'] = name
     return jsonify({'message': 'User updated successfully'}), 200
-    
+
+@app.route('/users/<user_id>', methods=['DELETE'])
+def delete_user(user_id):
+    if user_id in users:
+        del users[user_id]
+        return jsonify({'message': 'User deleted successfully'}), 200
+
+    return jsonify({"error": "User not found"}), 404
+
+if __name__ == '__main__':
+    app.run(debug=True)
